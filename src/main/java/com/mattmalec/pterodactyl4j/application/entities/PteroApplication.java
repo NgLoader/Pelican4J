@@ -57,7 +57,7 @@ public interface PteroApplication {
 	 *
 	 * @return {@link com.mattmalec.pterodactyl4j.PteroAction PteroAction} - Type {@link com.mattmalec.pterodactyl4j.application.entities.ApplicationUser ApplicationUsers}
 	 */
-	PteroAction<ApplicationUser> retrieveUserById(UUID uuid);
+	PteroAction<ApplicationUser> retrieveUserByUuid(UUID uuid);
 
 	/**
 	 * Retrieves ApplicationUsers matching the provided username from Pterodactyl instance

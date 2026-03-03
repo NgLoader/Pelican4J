@@ -63,11 +63,16 @@ public class PteroApplicationImpl implements PteroApplication {
 	}
 
 	@Override
-	public PteroAction<ApplicationUser> retrieveUserById(UUID uuid) {
-		return PteroActionImpl.onRequestExecute(
-				api,
-				Route.Users.GET_USER.compile(uuid.toString()),
-				(response, request) -> new ApplicationUserImpl(response.getObject(), this));
+	public PteroAction<ApplicationUser> retrieveUserByUuid(UUID uuid) {
+		return PteroActionImpl.onExecute(api, () -> {
+			Stream<ApplicationUserImpl> pag = PaginationResponseImpl.onPagination(
+					api,
+					Route.Users.GET_USER_UUID.compile(uuid.toString()),
+					(object) -> new ApplicationUserImpl(object, this))
+				.stream();
+
+			return pag.findFirst().orElse(null);
+		});
 	}
 
 	@Override

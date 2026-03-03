@@ -216,10 +216,17 @@ public class CreateServerImpl extends PteroActionImpl<ApplicationServer> impleme
 		Map<String, Object> env = new HashMap<>();
 		environment.forEach((k, v) -> env.put(k, v.get().orElse(null)));
 		egg.getDefaultVariableMap()
-				.orElseGet(() -> impl.retrieveEggById(egg.getId())
+				.orElseGet(() -> {
+					try {
+						return impl.retrieveEggById(egg.getId())
 						.execute()
 						.getDefaultVariableMap()
-						.get())
+						.get();
+					} catch(Exception e) {
+						e.printStackTrace();
+						return new HashMap<>();
+					}
+				})
 				.forEach((k, v) -> env.putIfAbsent(k, v.get().orElse(null)));
 		JSONObject featureLimits = new JSONObject()
 				.put("databases", databases)
@@ -266,13 +273,14 @@ public class CreateServerImpl extends PteroActionImpl<ApplicationServer> impleme
 				.put("egg", egg.getId())
 				.put("docker_image", dockerImage != null ? dockerImage : egg.getDockerImage())
 				.put("startup", startupCommand != null ? startupCommand : egg.getStartupCommand())
+				.put("environment", env)
+				.put("skip_scripts", skipScripts)
+				.put("oom_killer", false)
+				.put("start_on_completion", startOnCompletion)
 				.put("limits", limits)
 				.put("feature_limits", featureLimits)
-				.put("environment", env)
-				.put("deploy", (locations != null || portRange != null) ? deploy : null)
 				.put("allocation", allocation)
-				.put("start_on_completion", startOnCompletion)
-				.put("skip_scripts", skipScripts);
+				.put("deploy", (locations != null || portRange != null) ? deploy : null);
 		return getRequestBody(obj);
 	}
 
