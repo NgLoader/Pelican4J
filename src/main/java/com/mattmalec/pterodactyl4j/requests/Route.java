@@ -92,15 +92,12 @@ public class Route {
 				new Route(DELETE, APPLICATION_PREFIX + "servers/{server_id}/force");
 	}
 
-	public static class Nests {
+	public static class Eggs {
 
-		public static final Route LIST_NESTS = new Route(GET, APPLICATION_PREFIX + "nests?include=servers,eggs");
-		public static final Route GET_NEST =
-				new Route(GET, APPLICATION_PREFIX + "nests/{nest_id}?include=servers,eggs");
-		public static final Route GET_EGGS =
-				new Route(GET, APPLICATION_PREFIX + "nests/{nest_id}/eggs?include=variables,nest,servers");
+		public static final Route LIST_EGGS =
+				new Route(GET, APPLICATION_PREFIX + "eggs");
 		public static final Route GET_EGG =
-				new Route(GET, APPLICATION_PREFIX + "nests/{nest_id}/eggs/{egg_id}?include=variables,nest,servers");
+				new Route(GET, APPLICATION_PREFIX + "/eggs/{egg_id}");
 	}
 
 	public static class Client {

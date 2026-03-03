@@ -213,11 +213,10 @@ public class CreateServerImpl extends PteroActionImpl<ApplicationServer> impleme
 					portRange == null && locations == null,
 					"You need to set both a port range and Location, or set only an Allocation instead.");
 
-		Nest nest = egg.retrieveNest().execute();
 		Map<String, Object> env = new HashMap<>();
 		environment.forEach((k, v) -> env.put(k, v.get().orElse(null)));
 		egg.getDefaultVariableMap()
-				.orElseGet(() -> impl.retrieveEggById(nest, egg.getId())
+				.orElseGet(() -> impl.retrieveEggById(egg.getId())
 						.execute()
 						.getDefaultVariableMap()
 						.get())
@@ -264,7 +263,6 @@ public class CreateServerImpl extends PteroActionImpl<ApplicationServer> impleme
 				.put("name", name)
 				.put("description", description)
 				.put("user", owner.getId())
-				.put("nest", nest.getId())
 				.put("egg", egg.getId())
 				.put("docker_image", dockerImage != null ? dockerImage : egg.getDockerImage())
 				.put("startup", startupCommand != null ? startupCommand : egg.getStartupCommand())

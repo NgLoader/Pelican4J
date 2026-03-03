@@ -1,29 +1,42 @@
-.gradle
-/build/
-!gradle/wrapper/gradle-wrapper.jar
+.metadata
+bin/
+target/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
+# Eclipse Core
 .project
-.settings
-.springBeans
-.sts4-cache
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.ipr
-/out/
+# External tool builders
+.externalToolBuilders/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# Locally stored "Eclipse launch configurations"
+*.launch
 
-### Custom ###
-/logs/
-/src/test/java/
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
+# Java annotation processor (APT)
+.factorypath
+
+# sbteclipse plugin
+.target
+
+# Code Recommenders
+.recommenders/
+/target/
+
+#Logs
+*.log
+.test
+
+# Maven
+dependency-reduced-pom.xml
+.flattened-pom.xml

@@ -16,12 +16,18 @@
 
 package com.mattmalec.pterodactyl4j.application.entities;
 
-import com.mattmalec.pterodactyl4j.PteroAction;
-import com.mattmalec.pterodactyl4j.ServerStatus;
-import com.mattmalec.pterodactyl4j.application.managers.*;
-import com.mattmalec.pterodactyl4j.entities.Server;
 import java.util.List;
 import java.util.Optional;
+
+import com.mattmalec.pterodactyl4j.PteroAction;
+import com.mattmalec.pterodactyl4j.ServerStatus;
+import com.mattmalec.pterodactyl4j.application.managers.ApplicationDatabaseManager;
+import com.mattmalec.pterodactyl4j.application.managers.ServerBuildManager;
+import com.mattmalec.pterodactyl4j.application.managers.ServerController;
+import com.mattmalec.pterodactyl4j.application.managers.ServerDetailManager;
+import com.mattmalec.pterodactyl4j.application.managers.ServerManager;
+import com.mattmalec.pterodactyl4j.application.managers.ServerStartupManager;
+import com.mattmalec.pterodactyl4j.entities.Server;
 
 /**
  * Represents a Pterodactyl {@link com.mattmalec.pterodactyl4j.application.entities.ApplicationServer ApplicationServer}.
@@ -148,33 +154,6 @@ public interface ApplicationServer extends Server, ISnowflake {
 	 */
 	default String getDefaultAllocationId() {
 		return Long.toUnsignedString(getDefaultAllocationIdLong());
-	}
-
-	/**
-	 * The Nest the ApplicationServer is using
-	 *
-	 * @return {@link com.mattmalec.pterodactyl4j.PteroAction PteroAction} - Type {@link com.mattmalec.pterodactyl4j.application.entities.Nest Nest}
-	 */
-	PteroAction<Nest> retrieveNest();
-
-	/**
-	 * The id of the {@link com.mattmalec.pterodactyl4j.application.entities.Nest Nest} for the ApplicationServer
-	 *
-	 * @return Long containing the nest id
-	 *
-	 * @see ApplicationServer#retrieveNest()
-	 */
-	long getNestIdLong();
-
-	/**
-	 * The id of the {@link com.mattmalec.pterodactyl4j.application.entities.Nest Nest} for the ApplicationServer
-	 *
-	 * @return Never-null String containing the nest id
-	 *
-	 * @see ApplicationServer#retrieveNest()
-	 */
-	default String getNestId() {
-		return Long.toUnsignedString(getNestIdLong());
 	}
 
 	/**

@@ -16,8 +16,21 @@
 
 package com.mattmalec.pterodactyl4j.application.entities.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
+
 import com.mattmalec.pterodactyl4j.PteroAction;
-import com.mattmalec.pterodactyl4j.application.entities.*;
+import com.mattmalec.pterodactyl4j.application.entities.ApplicationAllocation;
+import com.mattmalec.pterodactyl4j.application.entities.ApplicationEgg;
+import com.mattmalec.pterodactyl4j.application.entities.ApplicationServer;
+import com.mattmalec.pterodactyl4j.application.entities.ApplicationUser;
+import com.mattmalec.pterodactyl4j.application.entities.ISnowflake;
+import com.mattmalec.pterodactyl4j.application.entities.Location;
+import com.mattmalec.pterodactyl4j.application.entities.Node;
+import com.mattmalec.pterodactyl4j.application.entities.PteroApplication;
 import com.mattmalec.pterodactyl4j.application.managers.LocationManager;
 import com.mattmalec.pterodactyl4j.application.managers.NodeManager;
 import com.mattmalec.pterodactyl4j.application.managers.ServerCreationAction;
@@ -26,13 +39,9 @@ import com.mattmalec.pterodactyl4j.entities.P4J;
 import com.mattmalec.pterodactyl4j.requests.PaginationAction;
 import com.mattmalec.pterodactyl4j.requests.PteroActionImpl;
 import com.mattmalec.pterodactyl4j.requests.Route;
+import com.mattmalec.pterodactyl4j.requests.action.impl.ListActionImpl;
 import com.mattmalec.pterodactyl4j.requests.action.impl.PaginationResponseImpl;
 import com.mattmalec.pterodactyl4j.utils.StreamUtils;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Stream;
-import org.json.JSONObject;
 
 public class PteroApplicationImpl implements PteroApplication {
 
@@ -50,6 +59,14 @@ public class PteroApplicationImpl implements PteroApplication {
 		return PteroActionImpl.onRequestExecute(
 				api,
 				Route.Users.GET_USER.compile(id),
+				(response, request) -> new ApplicationUserImpl(response.getObject(), this));
+	}
+
+	@Override
+	public PteroAction<ApplicationUser> retrieveUserById(UUID uuid) {
+		return PteroActionImpl.onRequestExecute(
+				api,
+				Route.Users.GET_USER.compile(uuid.toString()),
 				(response, request) -> new ApplicationUserImpl(response.getObject(), this));
 	}
 
@@ -162,86 +179,17 @@ public class PteroApplicationImpl implements PteroApplication {
 	}
 
 	@Override
-	public PteroAction<ApplicationEgg> retrieveEggById(Nest nest, String id) {
+	public PteroAction<ApplicationEgg> retrieveEggById(String id) {
 		return PteroActionImpl.onRequestExecute(
 				api,
-				Route.Nests.GET_EGG.compile(nest.getId(), id),
-				(response, request) -> new ApplicationEggImpl(response.getObject(), this));
-	}
-
-	protected PteroAction<ApplicationEgg> retrieveEggById(String nest, String egg) {
-		return PteroActionImpl.onRequestExecute(
-				api,
-				Route.Nests.GET_EGG.compile(nest, egg),
+				Route.Eggs.GET_EGG.compile(id),
 				(response, request) -> new ApplicationEggImpl(response.getObject(), this));
 	}
 
 	@Override
 	public PteroAction<List<ApplicationEgg>> retrieveEggs() {
-		return PteroActionImpl.onExecute(api, () -> {
-			List<Nest> nests = retrieveNests().all().execute();
-			List<ApplicationEgg> eggs = new ArrayList<>();
-			for (Nest nest : nests) {
-				eggs.addAll(nest.retrieveEggs().execute());
-			}
-			return Collections.unmodifiableList(eggs);
-		});
-	}
-
-	@Override
-	public PteroAction<List<ApplicationEgg>> retrieveEggsByNest(Nest nest) {
-		return PteroActionImpl.onRequestExecute(
-				api, Route.Nests.GET_EGGS.compile(nest.getId()), (response, request) -> {
-					List<ApplicationEgg> eggs = new ArrayList<>();
-					JSONObject json = response.getObject();
-					for (Object o : json.getJSONArray("data")) {
-						JSONObject egg = new JSONObject(o.toString());
-						eggs.add(new ApplicationEggImpl(egg, this));
-					}
-					return Collections.unmodifiableList(eggs);
-				});
-	}
-
-	@Override
-	public PteroAction<Nest> retrieveNestById(String id) {
-		return PteroActionImpl.onRequestExecute(
-				api, Route.Nests.GET_NEST.compile(id), (response, request) -> new NestImpl(response.getObject(), this));
-	}
-
-	@Override
-	public PaginationAction<Nest> retrieveNests() {
-		return PaginationResponseImpl.onPagination(
-				api, Route.Nests.LIST_NESTS.compile(), (object) -> new NestImpl(object, this));
-	}
-
-	@Override
-	public PteroAction<List<Nest>> retrieveNestsByName(String name, boolean caseSensitive) {
-		return PteroActionImpl.onExecute(api, () -> {
-			Stream<Nest> nests = retrieveNests().stream();
-
-			if (caseSensitive) {
-				nests = nests.filter(n -> n.getName().contains(name));
-			} else {
-				nests = nests.filter(n -> n.getName().toLowerCase().contains(name.toLowerCase()));
-			}
-
-			return nests.collect(StreamUtils.toUnmodifiableList());
-		});
-	}
-
-	@Override
-	public PteroAction<List<Nest>> retrieveNestsByAuthor(String author, boolean caseSensitive) {
-		return PteroActionImpl.onExecute(api, () -> {
-			Stream<Nest> nests = retrieveNests().stream();
-
-			if (caseSensitive) {
-				nests = nests.filter(n -> n.getAuthor().contains(author));
-			} else {
-				nests = nests.filter(n -> n.getAuthor().toLowerCase().contains(author.toLowerCase()));
-			}
-
-			return nests.collect(StreamUtils.toUnmodifiableList());
-		});
+		return ListActionImpl.onList(
+				api, Route.Eggs.LIST_EGGS.compile(), (object) -> new ApplicationEggImpl(object, this));
 	}
 
 	@Override

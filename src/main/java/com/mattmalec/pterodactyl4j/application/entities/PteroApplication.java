@@ -16,6 +16,9 @@
 
 package com.mattmalec.pterodactyl4j.application.entities;
 
+import java.util.List;
+import java.util.UUID;
+
 import com.mattmalec.pterodactyl4j.PteroAction;
 import com.mattmalec.pterodactyl4j.application.managers.LocationManager;
 import com.mattmalec.pterodactyl4j.application.managers.NodeManager;
@@ -23,7 +26,6 @@ import com.mattmalec.pterodactyl4j.application.managers.ServerCreationAction;
 import com.mattmalec.pterodactyl4j.application.managers.UserManager;
 import com.mattmalec.pterodactyl4j.requests.PaginationAction;
 import com.mattmalec.pterodactyl4j.utils.StreamUtils;
-import java.util.List;
 
 /**
  * The core of PteroApplication. All parts of the the PteroApplication API can be accessed starting from this class.
@@ -44,8 +46,8 @@ public interface PteroApplication {
 	 * Retrieves an individual ApplicationUser represented by the provided id from Pterodactyl instance
 	 * <br>This requires an <b>Application API key</b> with the <b>Users</b> permission with <b>Read</b> access.
 	 *
-	 * @param  id
-	 *         The user id
+	 * @param  uuid
+	 *         The user uuid
 	 *
 	 * @throws com.mattmalec.pterodactyl4j.exceptions.LoginException
 	 *         If the API key is incorrect or doesn't have the required permissions
@@ -55,26 +57,7 @@ public interface PteroApplication {
 	 *
 	 * @return {@link com.mattmalec.pterodactyl4j.PteroAction PteroAction} - Type {@link com.mattmalec.pterodactyl4j.application.entities.ApplicationUser ApplicationUsers}
 	 */
-	PteroAction<ApplicationUser> retrieveUserById(String id);
-
-	/**
-	 * Retrieves an individual ApplicationUser represented by the provided id from Pterodactyl instance
-	 * <br>This requires an <b>Application API key</b> with the <b>Users</b> permission with <b>Read</b> access.
-	 *
-	 * @param  id
-	 *         The user id
-	 *
-	 * @throws com.mattmalec.pterodactyl4j.exceptions.LoginException
-	 *         If the API key is incorrect or doesn't have the required permissions
-	 *
-	 * @throws com.mattmalec.pterodactyl4j.exceptions.NotFoundException
-	 * 		   If the user cannot be found
-	 *
-	 * @return {@link com.mattmalec.pterodactyl4j.PteroAction PteroAction} - Type {@link com.mattmalec.pterodactyl4j.application.entities.ApplicationUser ApplicationUsers}
-	 */
-	default PteroAction<ApplicationUser> retrieveUserById(long id) {
-		return retrieveUserById(Long.toUnsignedString(id));
-	}
+	PteroAction<ApplicationUser> retrieveUserById(UUID uuid);
 
 	/**
 	 * Retrieves ApplicationUsers matching the provided username from Pterodactyl instance
@@ -344,20 +327,6 @@ public interface PteroApplication {
 	LocationManager getLocationManager();
 
 	/**
-	 * Retrieves ApplicationEggs from the provided {@link com.mattmalec.pterodactyl4j.application.entities.Nest Nest} from Pterodactyl instance
-	 * <br>This requires an <b>Application API key</b> with the <b>Nests</b> and <b>Eggs</b> permissions with <b>Read</b> access.
-	 *
-	 * @param  nest
-	 *         The nest
-	 *
-	 * @throws com.mattmalec.pterodactyl4j.exceptions.LoginException
-	 *         If the API key is incorrect or doesn't have the required permissions
-	 *
-	 * @return {@link com.mattmalec.pterodactyl4j.PteroAction PteroAction} - Type {@link java.util.List List} of {@link com.mattmalec.pterodactyl4j.application.entities.ApplicationEgg ApplicationEggs}
-	 */
-	PteroAction<List<ApplicationEgg>> retrieveEggsByNest(Nest nest);
-
-	/**
 	 * Retrieves all of the ApplicationEggs from the Pterodactyl instance
 	 * <br>This requires an <b>Application API key</b> with the <b>Nests</b> and <b>Eggs</b> permissions with <b>Read</b> access.
 	 *
@@ -387,7 +356,7 @@ public interface PteroApplication {
 	 *
 	 * @return {@link com.mattmalec.pterodactyl4j.PteroAction PteroAction} - Type {@link com.mattmalec.pterodactyl4j.application.entities.ApplicationEgg ApplicationEgg}
 	 */
-	PteroAction<ApplicationEgg> retrieveEggById(Nest nest, String id);
+	PteroAction<ApplicationEgg> retrieveEggById(String id);
 
 	/**
 	 * Retrieves an individual ApplicationEgg represented by the provided {@link com.mattmalec.pterodactyl4j.application.entities.Nest Nest} and id from Pterodactyl instance
@@ -407,89 +376,9 @@ public interface PteroApplication {
 	 *
 	 * @return {@link com.mattmalec.pterodactyl4j.PteroAction PteroAction} - Type {@link com.mattmalec.pterodactyl4j.application.entities.ApplicationEgg ApplicationEgg}
 	 */
-	default PteroAction<ApplicationEgg> retrieveEggById(Nest nest, long id) {
-		return retrieveEggById(nest, Long.toUnsignedString(id));
+	default PteroAction<ApplicationEgg> retrieveEggById(long id) {
+		return retrieveEggById(Long.toUnsignedString(id));
 	}
-
-	/**
-	 * Retrieves an individual Nest represented by the provided id from Pterodactyl instance
-	 * <br>This requires an <b>Application API key</b> with the <b>Nests</b> permission with <b>Read</b> access.
-	 *
-	 * @param  id
-	 *         The id
-	 *
-	 * @throws com.mattmalec.pterodactyl4j.exceptions.LoginException
-	 *         If the API key is incorrect or doesn't have the required permissions
-	 *
-	 * @throws com.mattmalec.pterodactyl4j.exceptions.NotFoundException
-	 * 		   If the egg cannot be found
-	 *
-	 * @return {@link com.mattmalec.pterodactyl4j.PteroAction PteroAction} - Type {@link com.mattmalec.pterodactyl4j.application.entities.Nest Nest}
-	 */
-	PteroAction<Nest> retrieveNestById(String id);
-
-	/**
-	 * Retrieves an individual Nest represented by the provided id from Pterodactyl instance
-	 * <br>This requires an <b>Application API key</b> with the <b>Nests</b> permission with <b>Read</b> access.
-	 *
-	 * @param  id
-	 *         The id
-	 *
-	 * @throws com.mattmalec.pterodactyl4j.exceptions.LoginException
-	 *         If the API key is incorrect or doesn't have the required permissions
-	 *
-	 * @throws com.mattmalec.pterodactyl4j.exceptions.NotFoundException
-	 * 		   If the egg cannot be found
-	 *
-	 * @return {@link com.mattmalec.pterodactyl4j.PteroAction PteroAction} - Type {@link com.mattmalec.pterodactyl4j.application.entities.Nest Nest}
-	 */
-	default PteroAction<Nest> retrieveNestById(long id) {
-		return retrieveNestById(Long.toUnsignedString(id));
-	}
-
-	/**
-	 * Retrieves all of the Nests from the Pterodactyl instance
-	 * <br>This requires an <b>Application API key</b> with the <b>Nests</b> permissions with <b>Read</b> access.
-	 *
-	 *
-	 * @throws com.mattmalec.pterodactyl4j.exceptions.LoginException
-	 *         If the API key is incorrect or doesn't have the required permissions
-	 *
-	 * @return {@link com.mattmalec.pterodactyl4j.PteroAction PteroAction} - Type {@link java.util.List List} of {@link com.mattmalec.pterodactyl4j.application.entities.ApplicationEgg ApplicationEggs}
-	 */
-	PaginationAction<Nest> retrieveNests();
-
-	/**
-	 * Retrieves Nests matching the provided author from Pterodactyl instance
-	 * <br>This requires an <b>Application API key</b> with the <b>Nests</b> permission with <b>Read</b> access.
-	 *
-	 * @param  author
-	 *         The email address of the author
-	 * @param caseSensitive
-	 * 		   True - If P4J should search using case sensitivity
-	 *
-	 * @throws com.mattmalec.pterodactyl4j.exceptions.LoginException
-	 *         If the API key is incorrect or doesn't have the required permissions
-	 *
-	 * @return {@link com.mattmalec.pterodactyl4j.PteroAction PteroAction} - Type {@link java.util.List List} of {@link com.mattmalec.pterodactyl4j.application.entities.Nest Nests}
-	 */
-	PteroAction<List<Nest>> retrieveNestsByAuthor(String author, boolean caseSensitive);
-
-	/**
-	 * Retrieves Nests matching the provided name from Pterodactyl instance
-	 * <br>This requires an <b>Application API key</b> with the <b>Nests</b> permission with <b>Read</b> access.
-	 *
-	 * @param  name
-	 *         The name
-	 * @param caseSensitive
-	 * 		   True - If P4J should search using case sensitivity
-	 *
-	 * @throws com.mattmalec.pterodactyl4j.exceptions.LoginException
-	 *         If the API key is incorrect or doesn't have the required permissions
-	 *
-	 * @return {@link com.mattmalec.pterodactyl4j.PteroAction PteroAction} - Type {@link java.util.List List} of {@link com.mattmalec.pterodactyl4j.application.entities.Nest Nests}
-	 */
-	PteroAction<List<Nest>> retrieveNestsByName(String name, boolean caseSensitive);
 
 	/**
 	 * Retrieves all of the ApplicationServers from the Pterodactyl instance

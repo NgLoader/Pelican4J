@@ -33,13 +33,6 @@ import java.util.Optional;
 public interface ApplicationEgg extends Egg, ISnowflake {
 
 	/**
-	 * The Nest the ApplicationEgg is associated with
-	 *
-	 * @return {@link com.mattmalec.pterodactyl4j.PteroAction PteroAction} - Type {@link com.mattmalec.pterodactyl4j.application.entities.Nest Nest}
-	 */
-	PteroAction<Nest> retrieveNest();
-
-	/**
 	 * The egg variables assigned to the ApplicationEgg
 	 *
 	 * @return {@link java.util.Optional Optional} - Type {@link java.util.List List} of {@link EggVariable EggVariables}

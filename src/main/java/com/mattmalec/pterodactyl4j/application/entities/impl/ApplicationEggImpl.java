@@ -16,16 +16,21 @@
 
 package com.mattmalec.pterodactyl4j.application.entities.impl;
 
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.json.JSONObject;
+
 import com.mattmalec.pterodactyl4j.EnvironmentValue;
-import com.mattmalec.pterodactyl4j.PteroAction;
 import com.mattmalec.pterodactyl4j.application.entities.ApplicationEgg;
 import com.mattmalec.pterodactyl4j.application.entities.DockerImage;
-import com.mattmalec.pterodactyl4j.application.entities.Nest;
 import com.mattmalec.pterodactyl4j.application.entities.Script;
-import com.mattmalec.pterodactyl4j.requests.CompletedPteroAction;
-import java.time.OffsetDateTime;
-import java.util.*;
-import org.json.JSONObject;
 
 public class ApplicationEggImpl implements ApplicationEgg {
 
@@ -37,13 +42,6 @@ public class ApplicationEggImpl implements ApplicationEgg {
 		this.json = json.getJSONObject("attributes");
 		this.relationships = json.getJSONObject("attributes").optJSONObject("relationships");
 		this.impl = impl;
-	}
-
-	@Override
-	public PteroAction<Nest> retrieveNest() {
-		if (!json.has("relationships")) return impl.retrieveNestById(json.getLong("nest"));
-
-		return new CompletedPteroAction<>(impl.getP4J(), new NestImpl(relationships.getJSONObject("nest"), impl));
 	}
 
 	@Override

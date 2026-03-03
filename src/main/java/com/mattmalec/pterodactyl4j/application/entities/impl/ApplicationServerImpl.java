@@ -16,10 +16,30 @@
 
 package com.mattmalec.pterodactyl4j.application.entities.impl;
 
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.json.JSONObject;
+
 import com.mattmalec.pterodactyl4j.PteroAction;
 import com.mattmalec.pterodactyl4j.ServerStatus;
-import com.mattmalec.pterodactyl4j.application.entities.*;
-import com.mattmalec.pterodactyl4j.application.managers.*;
+import com.mattmalec.pterodactyl4j.application.entities.ApplicationAllocation;
+import com.mattmalec.pterodactyl4j.application.entities.ApplicationDatabase;
+import com.mattmalec.pterodactyl4j.application.entities.ApplicationEgg;
+import com.mattmalec.pterodactyl4j.application.entities.ApplicationServer;
+import com.mattmalec.pterodactyl4j.application.entities.ApplicationUser;
+import com.mattmalec.pterodactyl4j.application.entities.Container;
+import com.mattmalec.pterodactyl4j.application.entities.Node;
+import com.mattmalec.pterodactyl4j.application.managers.ApplicationDatabaseManager;
+import com.mattmalec.pterodactyl4j.application.managers.ServerBuildManager;
+import com.mattmalec.pterodactyl4j.application.managers.ServerController;
+import com.mattmalec.pterodactyl4j.application.managers.ServerDetailManager;
+import com.mattmalec.pterodactyl4j.application.managers.ServerManager;
+import com.mattmalec.pterodactyl4j.application.managers.ServerStartupManager;
 import com.mattmalec.pterodactyl4j.entities.FeatureLimit;
 import com.mattmalec.pterodactyl4j.entities.Limit;
 import com.mattmalec.pterodactyl4j.entities.impl.FeatureLimitImpl;
@@ -27,9 +47,6 @@ import com.mattmalec.pterodactyl4j.entities.impl.LimitImpl;
 import com.mattmalec.pterodactyl4j.requests.CompletedPteroAction;
 import com.mattmalec.pterodactyl4j.requests.PteroActionImpl;
 import com.mattmalec.pterodactyl4j.requests.Route;
-import java.time.OffsetDateTime;
-import java.util.*;
-import org.json.JSONObject;
 
 public class ApplicationServerImpl implements ApplicationServer {
 
@@ -85,7 +102,7 @@ public class ApplicationServerImpl implements ApplicationServer {
 
 	@Override
 	public PteroAction<ApplicationUser> retrieveOwner() {
-		if (!json.has("relationships")) return impl.retrieveUserById(getOwnerIdLong());
+		if (!json.has("relationships")) return impl.retrieveUserById(getOwnerId());
 
 		return new CompletedPteroAction<>(
 				impl.getP4J(), new ApplicationUserImpl(relationships.getJSONObject("user"), impl));
@@ -139,23 +156,8 @@ public class ApplicationServerImpl implements ApplicationServer {
 	}
 
 	@Override
-	public PteroAction<Nest> retrieveNest() {
-		if (!json.has("relationships")) return impl.retrieveNestById(getNestIdLong());
-
-		return new CompletedPteroAction<>(impl.getP4J(), new NestImpl(relationships.getJSONObject("nest"), impl));
-	}
-
-	@Override
-	public long getNestIdLong() {
-		return json.getLong("nest");
-	}
-
-	@Override
 	public PteroAction<ApplicationEgg> retrieveEgg() {
-		if (!json.has("relationships")) return impl.retrieveEggById(getNestId(), getEggId());
-
-		return new CompletedPteroAction<>(
-				impl.getP4J(), new ApplicationEggImpl(relationships.getJSONObject("egg"), impl));
+		return impl.retrieveEggById(getEggIdLong());
 	}
 
 	@Override

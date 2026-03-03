@@ -20,26 +20,31 @@ import com.mattmalec.pterodactyl4j.PteroAction;
 import com.mattmalec.pterodactyl4j.client.managers.APIKeyAction;
 import com.mattmalec.pterodactyl4j.client.managers.AccountManager;
 import com.mattmalec.pterodactyl4j.entities.User;
+
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 public interface Account extends User {
 
-	String getFirstName();
-
-	String getLastName();
-
-	default String getFullName() {
-		return String.format("%s %s", getFirstName(), getLastName());
-	}
-
-	long getId();
-
-	boolean isRootAdmin();
+	UUID getUuid();
 
 	String getLanguage();
+	
+	String getImage();
+	
+	boolean isAdmin();
+
+	boolean isRootAdmin();
+	
+	boolean is2FaEnabled();
+	
+	OffsetDateTime getCreatedAt();
+	
+	OffsetDateTime getUpdatedAt();
 
 	default Locale getLocale() {
 		return Locale.forLanguageTag(getLanguage());

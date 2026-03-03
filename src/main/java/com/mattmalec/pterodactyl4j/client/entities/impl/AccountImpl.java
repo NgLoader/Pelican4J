@@ -23,9 +23,13 @@ import com.mattmalec.pterodactyl4j.client.managers.APIKeyAction;
 import com.mattmalec.pterodactyl4j.client.managers.AccountManager;
 import com.mattmalec.pterodactyl4j.requests.PteroActionImpl;
 import com.mattmalec.pterodactyl4j.requests.Route;
+
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+
 import org.json.JSONObject;
 
 public class AccountImpl implements Account {
@@ -52,30 +56,45 @@ public class AccountImpl implements Account {
 	public String getEmail() {
 		return json.getString("email");
 	}
-
+	
 	@Override
-	public String getFirstName() {
-		return json.getString("first_name");
-	}
-
-	@Override
-	public String getLastName() {
-		return json.getString("last_name");
+	public UUID getUuid() {
+		return UUID.fromString(json.getString("uuid"));
 	}
 
 	@Override
 	public String getLanguage() {
 		return json.getString("language");
 	}
-
+	
 	@Override
-	public long getId() {
-		return json.getLong("id");
+	public String getImage() {
+		return json.getString("image");
+	}
+	
+	@Override
+	public boolean isAdmin() {
+		return json.getBoolean("admin");
 	}
 
 	@Override
 	public boolean isRootAdmin() {
-		return json.getBoolean("admin");
+		return json.getBoolean("root_admin");
+	}
+	
+	@Override
+	public boolean is2FaEnabled() {
+		return json.getBoolean("2fa_enabled");
+	}
+	
+	@Override
+	public OffsetDateTime getCreatedAt() {
+		return OffsetDateTime.parse(json.getString("created_at"));
+	}
+	
+	@Override
+	public OffsetDateTime getUpdatedAt() {
+		return OffsetDateTime.parse(json.getString("updated_at"));
 	}
 
 	@Override
