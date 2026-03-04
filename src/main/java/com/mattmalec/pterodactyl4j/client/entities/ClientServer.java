@@ -137,11 +137,10 @@ public interface ClientServer extends Server {
 
 	List<ClientAllocation> getAllocations();
 
-	default ClientAllocation getPrimaryAllocation() {
+	default Optional<ClientAllocation> getPrimaryAllocation() {
 		return getAllocations().stream()
 				.filter(ClientAllocation::isDefault)
-				.findFirst()
-				.get();
+				.findFirst();
 	}
 
 	default Optional<ClientAllocation> getAllocationByPort(int port) {
